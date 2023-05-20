@@ -4,10 +4,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
-import com.example.amphibians.data.NetworkAmphibianPhotosRepository
-import com.example.amphibians.network.AmphibiansApi
-import com.example.amphibians.network.AmphibiansPhoto
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.amphibians.AmphibianPhotosApplication
+import com.example.amphibians.data.AmphibianPhotosRepository
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -17,7 +20,7 @@ sealed interface AmphibiansUiState{
     object Error : AmphibiansUiState
 }
 
-class AmphibiansViewModel: ViewModel() {
+class AmphibiansViewModel(private val amphibianPhotosRepository: AmphibianPhotosRepository): ViewModel() {
     /** The mutable state that stores the status of the most recent request**/
     var amphibiansUiState: AmphibiansUiState by mutableStateOf(AmphibiansUiState.Loading)
         private set
@@ -33,13 +36,21 @@ class AmphibiansViewModel: ViewModel() {
     private fun getAmphibians(){
         viewModelScope.launch{
             try {
-                val amphibianPhotosRepository = NetworkAmphibianPhotosRepository()
                 val listResult = amphibianPhotosRepository.getAmphibians()
                 amphibiansUiState = AmphibiansUiState.Success(
                     "Success: ${listResult.size} species received"
                 )
             }catch (e: IOException){
                 AmphibiansUiState.Error
+            }
+        }
+    }
+    companion object{
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = (this[APPLICATION_KEY] as AmphibianPhotosApplication)
+                val amphibianPhotosRepository = application.container.amphibianPhotosRepository
+                AmphibiansViewModel(amphibianPhotosRepository = amphibianPhotosRepository)
             }
         }
     }
