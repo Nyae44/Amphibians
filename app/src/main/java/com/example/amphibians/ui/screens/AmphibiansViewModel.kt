@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.amphibians.data.NetworkAmphibianPhotosRepository
 import com.example.amphibians.network.AmphibiansApi
 import com.example.amphibians.network.AmphibiansPhoto
 import kotlinx.coroutines.launch
@@ -32,7 +33,8 @@ class AmphibiansViewModel: ViewModel() {
     private fun getAmphibians(){
         viewModelScope.launch{
             try {
-                val listResult = AmphibiansApi.retrofitService.getAmphibians()
+                val amphibianPhotosRepository = NetworkAmphibianPhotosRepository()
+                val listResult = amphibianPhotosRepository.getAmphibians()
                 amphibiansUiState = AmphibiansUiState.Success(
                     "Success: ${listResult.size} species received"
                 )
