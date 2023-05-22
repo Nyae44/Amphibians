@@ -8,6 +8,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -23,7 +24,7 @@ import com.example.amphibians.ui.screens.HomeScreen
 fun AmphibiansPhotosApp(modifier: Modifier = Modifier){
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        topBar = { TopAppBar(title = { stringResource(id = R.string.app_name)}) }
+        topBar = { TopAppBar(title = { Text(text= stringResource(id = R.string.app_name))}) }
     ) {
         Surface(
             modifier = Modifier
@@ -31,7 +32,7 @@ fun AmphibiansPhotosApp(modifier: Modifier = Modifier){
                 .padding(it),
             color = MaterialTheme.colorScheme.background
         ) {
-            val amphibiansViewModel: AmphibiansViewModel = viewModel()
+            val amphibiansViewModel: AmphibiansViewModel = viewModel(factory = AmphibiansViewModel.Factory)
             HomeScreen(amphibiansUiState = amphibiansViewModel.amphibiansUiState)
         }
     }

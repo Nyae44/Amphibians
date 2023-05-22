@@ -1,6 +1,7 @@
-package com.example.amphibians.fake
+package com.example.amphibians.rules
 
-import com.example.amphibians.rules.TestDispatcherRule
+import com.example.amphibians.fake.FakeAmphibianPhotosRepository
+import com.example.amphibians.fake.FakeDataSource
 import com.example.amphibians.ui.screens.AmphibiansUiState
 import com.example.amphibians.ui.screens.AmphibiansViewModel
 import junit.framework.TestCase.assertEquals
@@ -9,15 +10,16 @@ import org.junit.Rule
 import org.junit.Test
 
 class AmphibiansViewModelTest {
-    @get:Rule
+    @get:
+    Rule
     val testDispatcher = TestDispatcherRule()
     @Test
-    fun amphibiansViewModel_getAmphibians_veifyAmphibiansUiStateSuccess()= runTest{
+    fun amphibiansViewModel_getAmphibians_verifyAmphibiansUiStateSuccess()= runTest{
         val amphibiansViewModel = AmphibiansViewModel(
             amphibianPhotosRepository = FakeAmphibianPhotosRepository()
         )
         assertEquals(
-            AmphibiansUiState.Success("Success: ${FakeDataSource.photosList.size} species received"),
+            AmphibiansUiState.Success(FakeDataSource.photosList),
             amphibiansViewModel.amphibiansUiState
         )
     }

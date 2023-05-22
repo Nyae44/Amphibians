@@ -11,11 +11,12 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.amphibians.AmphibianPhotosApplication
 import com.example.amphibians.data.AmphibianPhotosRepository
+import com.example.amphibians.network.AmphibiansPhoto
 import kotlinx.coroutines.launch
 import java.io.IOException
 
 sealed interface AmphibiansUiState{
-    data class Success(val amphibiansPhoto: String) : AmphibiansUiState
+    data class Success(val amphibiansPhoto: List<AmphibiansPhoto>) : AmphibiansUiState
     object Loading : AmphibiansUiState
     object Error : AmphibiansUiState
 }
@@ -36,9 +37,8 @@ class AmphibiansViewModel(private val amphibianPhotosRepository: AmphibianPhotos
     private fun getAmphibians(){
         viewModelScope.launch{
             try {
-                val listResult = amphibianPhotosRepository.getAmphibians()
                 amphibiansUiState = AmphibiansUiState.Success(
-                    "Success: ${listResult.size} species received"
+                    amphibianPhotosRepository.getAmphibians()
                 )
             }catch (e: IOException){
                 AmphibiansUiState.Error
